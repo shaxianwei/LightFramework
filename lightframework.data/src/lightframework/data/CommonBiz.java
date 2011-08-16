@@ -10,19 +10,19 @@ import java.util.List;
  *
  * @author Tom Deng
  */
-public class CommonBiz<TDAO extends BaseSelect<TEntity>, TEntity> {
+public abstract class CommonBiz<TDAO extends BaseSelect<TEntity>, TEntity> {
 
     private TDAO _dataAccessor;
-
-    public TDAO getDataAccessor() {
-        return this._dataAccessor;
-    }
 
     protected CommonBiz(TDAO dataAccessor) {
         this._dataAccessor = dataAccessor;
     }
 
-    public List<TEntity> Get(String... columnNames) {
+    public TDAO getDataAccessor() {
+        return this._dataAccessor;
+    }
+
+    public List<TEntity> getAll(String... columnNames) {
         return this.getDataAccessor().select(columnNames);
     }
 }
