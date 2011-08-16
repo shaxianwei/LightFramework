@@ -7,7 +7,7 @@ package lightframework.data.mysql.test;
 import lightframework.data.entities.CategoryDTO;
 import java.sql.ResultSet;
 import java.util.List;
-import lightframework.data.DataFieldMapTable;
+import lightframework.data.collections.DataFieldMapTable;
 import lightframework.data.EntityActionListener;
 import lightframework.data.mapping.MetaDataTable;
 import lightframework.data.mapping.EntityMapper;
