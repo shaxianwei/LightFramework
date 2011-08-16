@@ -10,9 +10,9 @@ package lightframework.data;
  */
 public interface BaseDelete<T> {
 
-    boolean deleteWithCondition(String condition, Object... parameterValues);
+    int deleteWithCondition(String condition, Object... parameterValues);
 
-    void deleteAll();
+    int deleteAll();
 
     void truncate();
 }

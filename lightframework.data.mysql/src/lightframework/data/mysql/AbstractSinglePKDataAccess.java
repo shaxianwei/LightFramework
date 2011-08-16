@@ -25,19 +25,19 @@ public abstract class AbstractSinglePKDataAccess<T> extends AbstractBaseDataAcce
     }
 
     @Override
-    public boolean delete(int keyValue) {
+    public int delete(int keyValue) {
         String condition = String.format("%1$s = %2$s", this.primaryKey, keyValue);
         return this.deleteWithCondition(condition);
     }
 
     @Override
-    public boolean delete(String keyValue) {
+    public int delete(String keyValue) {
         String condition = String.format("%s = ?", this.primaryKey);
         return this.deleteWithCondition(condition, keyValue);
     }
 
     @Override
-    public boolean delete(int... keyValues) {
+    public int delete(int... keyValues) {
         String[] keys = new String[keyValues.length];
         for (int i = 0; i < keyValues.length; i++) {
             keys[i] = Integer.valueOf(keyValues[0]).toString();
@@ -47,12 +47,12 @@ public abstract class AbstractSinglePKDataAccess<T> extends AbstractBaseDataAcce
     }
 
     @Override
-    public boolean delete(String... keyValues) {
+    public int delete(String... keyValues) {
         return this.deleteIn(this.join(",", keyValues));
     }
 
     @Override
-    public boolean deleteIn(String keyValues) {
+    public int deleteIn(String keyValues) {
         String condition = String.format("%1$s IN(%2$s)", this.primaryKey, keyValues);
         return this.deleteWithCondition(condition);
     }

@@ -10,7 +10,7 @@ package lightframework.data;
  */
 public interface BaseInsert<T> {
 
-    void insert(T entity);
+    int insert(T entity);
 
     int insertWithId(T entity);
 }

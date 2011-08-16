@@ -8,6 +8,5 @@ package lightframework.data;
  *
  * @author Tom Deng
  */
-public class BaseDataAccessBiz {
-    
+public class BaseDataAccessBiz {   
 }

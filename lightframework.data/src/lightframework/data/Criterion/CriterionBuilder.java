@@ -2,12 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package lightframework.data;
+package lightframework.data.Criterion;
 
 /**
  *
  * @author Tom Deng
  */
-public class ColumnAttribute {
+public class CriterionBuilder {
     
 }

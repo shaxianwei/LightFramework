@@ -4,6 +4,7 @@
  */
 package lightframework.data.mysql;
 
+import lightframework.data.collections.DataFieldMapTable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import lightframework.data.*;
@@ -20,9 +21,9 @@ public abstract class AbstractBaseDataAccess<T> extends AbstractBaseSelect<T> im
     }
 
     @Override
-    public void insert(T entity) {
+    public int insert(T entity) {
         SqlExpression sqlExpr = this.generateInsertSqlExpression(this.getDataFieldMapTable(entity), this.tableName);
-        MySqlHelper.executeNonQuery(this.connectionString, sqlExpr.getCommandText(), sqlExpr.getParameters());
+        return MySqlHelper.executeNonQuery(this.connectionString, sqlExpr.getCommandText(), sqlExpr.getParameters());
     }
 
     @Override
@@ -30,30 +31,29 @@ public abstract class AbstractBaseDataAccess<T> extends AbstractBaseSelect<T> im
         SqlExpression sqlExpr = this.generateInsertSqlExpression(this.getDataFieldMapTable(entity), this.tableName);
         String sqlCmd = sqlExpr.getCommandText();
         Object lastId = MySqlHelper.executeScalar(this.connectionString, sqlCmd, true, sqlExpr.getParameters());
-
         return Integer.valueOf(lastId.toString());
     }
 
     @Override
-    public void deleteAll() {
+    public int  deleteAll() {
         String sqlCmd = String.format("DELETE FROM %s", this.tableName);
-        MySqlHelper.executeNonQuery(this.connectionString, sqlCmd);
+        return MySqlHelper.executeNonQuery(this.connectionString, sqlCmd);
     }
 
     @Override
-    public boolean deleteWithCondition(String condition, Object... parameterValues) {
+    public int deleteWithCondition(String condition, Object... parameterValues) {
         if (this.containWhere(condition)) {
             throw new WhereConditionException("condition:指定的条件,不要求带SQL语句Where关键字的条件");
         }
 
         if (this.isNullOrEmpty(condition)) {
-            return false;
+            return -1;
         }
 
         StringBuilder strSql = new StringBuilder();
         strSql.append("DELETE FROM %1$s WHERE %2$s");
         String sqlCmd = String.format(strSql.toString(), this.tableName, condition);
-        return MySqlHelper.executeNonQuery(this.connectionString, sqlCmd, parameterValues) > 0;
+        return MySqlHelper.executeNonQuery(this.connectionString, sqlCmd, parameterValues);
     }
 
     @Override

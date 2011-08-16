@@ -10,13 +10,13 @@ package lightframework.data;
  */
 public interface SinglePKDelete<T> {
 
-    boolean delete(int keyValue);
+    int delete(int keyValue);
 
-    boolean delete(String keyValue);
+    int delete(String keyValue);
 
-    boolean delete(int... keyValues);
+    int delete(int... keyValues);
 
-    boolean delete(String... keyValues);
+    int delete(String... keyValues);
 
-    boolean deleteIn(String keyValues);
+    int deleteIn(String keyValues);
 }
