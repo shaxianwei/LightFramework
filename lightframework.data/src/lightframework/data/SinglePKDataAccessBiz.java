@@ -8,7 +8,8 @@ package lightframework.data;
  *
  * @author Tom Deng
  */
-public abstract class SinglePKDataAccessBiz<TDAO extends BaseDataAccess<TEntity> & SinglePKDataAccess<TEntity>, TEntity> extends BaseDataAccessBiz<TDAO, TEntity> {
+public abstract class SinglePKDataAccessBiz<TDAO extends BaseDataAccess<TEntity> & SinglePKDataAccess<TEntity>, TEntity>
+        extends BaseDataAccessBiz<TDAO, TEntity> {
 
     protected SinglePKDataAccessBiz(TDAO dao) {
         super(dao);

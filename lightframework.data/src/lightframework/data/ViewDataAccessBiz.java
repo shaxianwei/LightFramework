@@ -8,7 +8,8 @@ package lightframework.data;
  *
  * @author Tom Deng
  */
-public abstract class ViewDataAccessBiz<TDAO extends BaseSelect<TEntity> & ViewDataAccess<TEntity>, TEntity> extends CommonBiz<TDAO, TEntity> {
+public abstract class ViewDataAccessBiz<TDAO extends BaseSelect<TEntity> & ViewDataAccess<TEntity>, TEntity>
+        extends CommonBiz<TDAO, TEntity> {
 
     protected ViewDataAccessBiz(TDAO dataAccessor) {
         super(dataAccessor);
