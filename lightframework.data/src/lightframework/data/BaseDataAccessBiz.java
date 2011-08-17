@@ -10,19 +10,19 @@ package lightframework.data;
  */
 public abstract class BaseDataAccessBiz<TDAO extends BaseDataAccess<TEntity>, TEntity> extends CommonBiz<TDAO, TEntity> {
 
-    protected BaseDataAccessBiz(TDAO dataAccessor) {
-        super(dataAccessor);
+    protected BaseDataAccessBiz(TDAO dao) {
+        super(dao);
     }
 
     public int addWithId(TEntity entity) {
-        return this.getDataAccessor().insertWithId(entity);
+        return this.getDAO().insertWithId(entity);
     }
 
     public int add(TEntity entity) {
-        return this.getDataAccessor().insert(entity);
+        return this.getDAO().insert(entity);
     }
 
     public void clear() {
-        this.getDataAccessor().deleteAll();
+        this.getDAO().deleteAll();
     }
 }
