@@ -19,6 +19,7 @@ public class MetaDataColumn {
     public MetaDataColumn(Field field, Column columnAnnotation) {
         this.field = field;
         this.columnAnnotation = columnAnnotation;
+        this.field.setAccessible(true);
     }
 
     public Column getColumnAnnotation() {

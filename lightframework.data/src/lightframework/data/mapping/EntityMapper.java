@@ -43,7 +43,7 @@ public final class EntityMapper {
         } catch (IllegalAccessException ex) {
             throw new RuntimeException(ex);
         }
-        
+
         return entity;
     }
 
