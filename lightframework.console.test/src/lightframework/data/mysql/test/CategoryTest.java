@@ -13,7 +13,7 @@ import java.util.*;
  */
 public class CategoryTest {
 
-    private final static String url = "jdbc:mysql://localhost/test?user=root&password=ddd";
+    private final static String url = "jdbc:mysql://192.168.1.251/test?user=root&password=ddd";
 
     public void run() {
         Category category = new Category(url);
@@ -25,6 +25,6 @@ public class CategoryTest {
         
         List<CategoryDTO> oneCategory = category.getCategoryById(8);
         if(oneCategory == null || oneCategory.isEmpty()) return;
-        System.out.println(oneCategory.get(0).id);
+        System.out.println(oneCategory.get(0).getId());
     }
 }

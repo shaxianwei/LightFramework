@@ -17,11 +17,11 @@ public class CategoryDTO {
     public final static String C_Name = "Name";
     public final static String C_Code = "Code";
     @Column(name = "Name")
-    public String name;
+    private String name;
     @Column(name = "CategoryId", isIdentity = true, isPrimaryKey = true)
-    public Integer id;
+    private Integer id;
     @Column(name = "Code")
-    public String code;
+    private String code;
 
     public CategoryDTO(){
         

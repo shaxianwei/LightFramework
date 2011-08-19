@@ -17,7 +17,7 @@ public class EntityListTest {
         EntityList<CategoryDTO> entities = new EntityList<CategoryDTO>(10);
         for (int i = 0; i < 10; i++) {
             CategoryDTO dto = new CategoryDTO("cate" + i, "cate" + i);
-            dto.id = i;
+            dto.setId(i);
             entities.add(dto);
         }
 
@@ -25,7 +25,7 @@ public class EntityListTest {
 
             @Override
             public void execute(CategoryDTO element) {
-                System.out.println(element.code);
+                System.out.println(element.getCode());
             }
         });
 
@@ -33,7 +33,7 @@ public class EntityListTest {
 
             @Override
             public boolean isMatch(CategoryDTO element) {
-                return element.id % 2 == 0;
+                return element.getId() % 2 == 0;
             }
         });
 
@@ -41,7 +41,7 @@ public class EntityListTest {
 
             @Override
             public void execute(CategoryDTO element) {
-                System.out.print(element.code);
+                System.out.print(element.getCode());
             }
         });
 
@@ -50,7 +50,7 @@ public class EntityListTest {
 
             @Override
             public void execute(CategoryDTO element) {
-                System.out.println(element.code);
+                System.out.println(element.getCode());
             }
         });
     }
