@@ -20,11 +20,11 @@ import lightframework.data.mysql.AbstractSinglePKDataAccess;
 public class Category extends AbstractSinglePKDataAccess<CategoryDTO> {
 
     public Category(String connectionString) {
-        super(CategoryDTO.ENTITYNAME, CategoryDTO.C_CategoryId, connectionString);
+        super(CategoryDTO.ENTITYNAME, CategoryDTO.C_Id, connectionString);
     }
 
     public Category(String tableName, String connectionString) {
-        super(tableName, CategoryDTO.C_CategoryId, connectionString);
+        super(tableName, CategoryDTO.C_Id, connectionString);
     }
 
     public Category(String tableName, String primaryKey, String connectionString) {

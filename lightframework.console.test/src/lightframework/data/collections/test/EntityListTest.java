@@ -16,7 +16,7 @@ public class EntityListTest {
     public void run() {
         EntityList<CategoryDTO> entities = new EntityList<CategoryDTO>(10);
         for (int i = 0; i < 10; i++) {
-            CategoryDTO dto = new CategoryDTO("cate" + i, "cate" + i);
+            CategoryDTO dto = new CategoryDTO(i, "cate" + i, "cate" + i);
             dto.setId(i);
             entities.add(dto);
         }
@@ -25,7 +25,7 @@ public class EntityListTest {
 
             @Override
             public void execute(CategoryDTO element) {
-                System.out.println(element.getCode());
+                System.out.println(element.getDescription());
             }
         });
 
@@ -41,7 +41,7 @@ public class EntityListTest {
 
             @Override
             public void execute(CategoryDTO element) {
-                System.out.print(element.getCode());
+                System.out.print(element.getDescription());
             }
         });
 
@@ -50,7 +50,7 @@ public class EntityListTest {
 
             @Override
             public void execute(CategoryDTO element) {
-                System.out.println(element.getCode());
+                System.out.println(element.getDescription());
             }
         });
     }

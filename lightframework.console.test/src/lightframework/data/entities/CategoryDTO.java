@@ -13,23 +13,23 @@ import lightframework.data.annotations.Column;
 public class CategoryDTO {
 
     public final static String ENTITYNAME = "Category";
-    public final static String C_CategoryId = "CategoryId";
+    public final static String C_Id = "Id";
     public final static String C_Name = "Name";
-    public final static String C_Code = "Code";
+    public final static String C_Description = "Description";
     @Column(name = "Name")
-    private String name;
-    @Column(name = "CategoryId", isIdentity = true, isPrimaryKey = true)
+    private  String name;
+    @Column(name = "Id", isPrimaryKey = true)
     private Integer id;
-    @Column(name = "Code")
-    private String code;
+    @Column(name = "Description")
+    private String description;
 
-    public CategoryDTO(){
-        
+    public CategoryDTO() {
     }
-    
-    public CategoryDTO(String name, String code) {
+
+    public CategoryDTO(Integer id, String name, String description) {
+        this.id = id;
         this.name = name;
-        this.code = code;
+        this.description = description;
     }
 
     public Integer getId() {
@@ -48,11 +48,11 @@ public class CategoryDTO {
         this.name = value;
     }
 
-    public String getCode() {
-        return this.code;
+    public String getDescription() {
+        return this.description;
     }
 
-    public void setCode(String value) {
-        this.code = value;
+    public void setDescription(String value) {
+        this.description = value;
     }
 }
