@@ -50,7 +50,7 @@ public class Category extends AbstractSinglePKDataAccess<CategoryDTO> {
     }
 
     public List<CategoryDTO> getCategoryById(int id) {
-        String sqlCmd = "Select * from category where categoryid=" + id;
+        String sqlCmd = "Select * from category where id=" + id;
         return this.<CategoryDTO>getEntities(sqlCmd, null, new EntityActionListener<CategoryDTO>() {
 
             @Override

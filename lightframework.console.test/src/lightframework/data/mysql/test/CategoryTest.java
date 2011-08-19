@@ -17,6 +17,7 @@ public class CategoryTest {
 
     public void run() {
         Category category = new Category(url);
+        category.deleteAll();
         List<CategoryDTO> categories = category.select();
         for (int i = 0; i < 10; i++) {
             CategoryDTO dto = new CategoryDTO(i,"test" + i, "test1" + i);
