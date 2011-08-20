@@ -19,7 +19,7 @@ import lightframework.data.mapping.MetaDataTable;
  * @param <T> 
  */
 public abstract class AbstractBaseSelect<T> implements BaseSelect<T>, EntityActionListener<T> {
-
+    
     protected String tableName = "";
     protected String connectionString = "";
 
@@ -290,7 +290,7 @@ public abstract class AbstractBaseSelect<T> implements BaseSelect<T>, EntityActi
                 rs = null;
             }
         }
-
+        
         return entities;
     }
 
