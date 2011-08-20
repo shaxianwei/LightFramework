@@ -35,7 +35,7 @@ public abstract class AbstractBaseDataAccess<T> extends AbstractBaseSelect<T> im
     }
 
     @Override
-    public int  deleteAll() {
+    public int deleteAll() {
         String sqlCmd = String.format("DELETE FROM %s", this.tableName);
         return MySqlHelper.executeNonQuery(this.connectionString, sqlCmd);
     }
