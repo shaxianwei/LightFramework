@@ -15,3 +15,5 @@
 /lightframework.data/nbproject/private/
 /lightframework.tracing/nbproject/private/
 /lightframework.data.test/build/
+/lightframework.data.mysql.test/build/
+/lightframework.data.mysql.test/dist/
