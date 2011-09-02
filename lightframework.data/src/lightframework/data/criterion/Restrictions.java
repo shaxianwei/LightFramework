@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package lightframework.data.Criterion;
+package lightframework.data.criterion;
 
-import lightframework.data.Criterion.Operands.*;
+import lightframework.data.criterion.operands.*;
 
 /**
  *

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package lightframework.data.Criterion.Operands;
+package lightframework.data.criterion.operands;
 
 import java.util.ArrayList;
 
