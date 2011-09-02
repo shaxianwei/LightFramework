@@ -17,3 +17,14 @@
 /lightframework.data.test/build/
 /lightframework.data.mysql.test/build/
 /lightframework.data.mysql.test/dist/
+/lightframework.caching/build/
+/lightframework.caching/dist/
+/lightframework.core/build/
+/lightframework.core/dist/
+/lightframework.data.oracle/dist/
+/lightframework.data.oracle/build/
+/lightframework.data.sqlserver/dist/
+/lightframework.data.sqlserver/build/
+/lightframework.data.test/dist/
+/lightframework.tracing/dist/
+/lightframework.tracing/build/
