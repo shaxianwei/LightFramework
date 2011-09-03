@@ -20,6 +20,6 @@ public class NotEqualOperand extends Operand {
 
     @Override
     protected String toExpression() {
-        return String.format("%1$s <> %1$s ", this.columnName, this.columnValue);
+        return String.format("%1$s <> %2$s ", this.columnName, this.columnValue);
     }
 }
