@@ -49,7 +49,7 @@ public class MetaDataTable {
         return this.tableName;
     }
 
-    public Type getEntityType() {
+    public Class<?> getEntityType() {
         return this.entityType;
     }
 
