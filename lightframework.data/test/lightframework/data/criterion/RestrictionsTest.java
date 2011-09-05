@@ -17,6 +17,7 @@ import lightframework.data.criterion.operands.*;
 public class RestrictionsTest {
     
     public RestrictionsTest(){
+        
     }
 
     @Test
