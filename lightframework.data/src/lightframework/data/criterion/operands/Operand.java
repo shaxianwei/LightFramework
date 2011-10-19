@@ -31,7 +31,6 @@ public abstract class Operand {
 
         StringBuilder expr = new StringBuilder();
         expr.append(this.toExpression());
-
         for (Operand operand : this.operands) {
             expr.append(operand.toString());
         }

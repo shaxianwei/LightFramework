@@ -17,6 +17,14 @@ public class ClauseOperand extends Operand {
     }
 
     @Override
+    public String toString(){
+        if(this.operands == null)
+            this._sqlClause = SqlClause.None;
+        
+        return super.toString();
+    }
+    
+    @Override
     protected String toExpression() {
         String strSqlClause = this._sqlClause == SqlClause.None ? "" : this._sqlClause.toString();
         return String.format("%s ", strSqlClause);

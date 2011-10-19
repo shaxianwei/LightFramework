@@ -119,4 +119,12 @@ public class RestrictionsTest {
 
         Assert.assertThat(operand.toString(), IsEqual.equalTo(sqlCondition));
     }
+    
+    @Test
+    public void noOperands() {
+        String sqlCondition = " ";
+        Operand operand = Restrictions.clause(SqlClause.Where);
+        
+        Assert.assertThat(operand.toString(), IsEqual.equalTo(sqlCondition));
+    }
 }
