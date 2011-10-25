@@ -84,12 +84,12 @@ public class MySqlHelper {
         return executeScalar(url, commandText, isReturnGeneratedKey, (Object[]) null);
     }
 
-    public static Object executeScalar(String url, String commandText, boolean isReturnGeneratedKey, Object... commandParameters) {
+    public static Object executeScalar(String url, String commandText, boolean isGeneratedKey, Object... commandParameters) {
         Connection connection = null;
 
         try {
             connection = DriverManager.getConnection(url);
-            return executeScalar(connection, commandText, isReturnGeneratedKey, commandParameters);
+            return executeScalar(connection, commandText, isGeneratedKey, commandParameters);
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
@@ -103,16 +103,16 @@ public class MySqlHelper {
         return executeScalar(connection, commandText, false, (Object[]) null);
     }
 
-    public static Object executeScalar(Connection connection, String commandText, boolean isReturnGeneratedKey) {
-        return executeScalar(connection, commandText, isReturnGeneratedKey, (Object[]) null);
+    public static Object executeScalar(Connection connection, String commandText, boolean isGeneratedKey) {
+        return executeScalar(connection, commandText, isGeneratedKey, (Object[]) null);
     }
 
-    public static Object executeScalar(Connection connection, String commandText, boolean isReturnGeneratedKey, Object... commandParameters) {
+    public static Object executeScalar(Connection connection, String commandText, boolean isGeneratedKey, Object... commandParameters) {
         try {
-            PreparedStatement preStat = getPreparedStatement(connection, commandText, isReturnGeneratedKey, commandParameters);
+            PreparedStatement preStat = getPreparedStatement(connection, commandText, isGeneratedKey, commandParameters);
 
             ResultSet rs = null;
-            if (isReturnGeneratedKey) {
+            if (isGeneratedKey) {
                 preStat.executeUpdate();
                 rs = preStat.getGeneratedKeys();
             } else {
@@ -188,8 +188,8 @@ public class MySqlHelper {
     }
 
     private static PreparedStatement getPreparedStatement(Connection connection, String commandText,
-            boolean isReturnGeneratedKey, Object[] commandParameters) throws SQLException {
-        PreparedStatement preStat = isReturnGeneratedKey
+            boolean isGeneratedKey, Object[] commandParameters) throws SQLException {
+        PreparedStatement preStat = isGeneratedKey
                 ? connection.prepareStatement(commandText, Statement.RETURN_GENERATED_KEYS)
                 : connection.prepareStatement(commandText);
         preStat.clearParameters();
