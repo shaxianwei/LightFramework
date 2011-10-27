@@ -80,8 +80,8 @@ public class MySqlHelper {
         return executeScalar(url, commandText, false, commandParameters);
     }
 
-    public static Object executeScalar(String url, String commandText, boolean isReturnGeneratedKey) {
-        return executeScalar(url, commandText, isReturnGeneratedKey, (Object[]) null);
+    public static Object executeScalar(String url, String commandText, boolean isGeneratedKey) {
+        return executeScalar(url, commandText, isGeneratedKey, (Object[]) null);
     }
 
     public static Object executeScalar(String url, String commandText, boolean isGeneratedKey, Object... commandParameters) {
