@@ -89,7 +89,7 @@ public class RestrictionsTest {
     @Test
     public void compositeOperand() {
         String sqlCondition = "Where Name = TomDeng  AND Age = 29  AND (Weight BETWEEN 100 AND 180  AND Salary < 20w )";
-        Operand operand = Restrictions.clause(SqlClause.Where)
+        AbstractOperand operand = Restrictions.clause(SqlClause.Where)
                 .append(Restrictions.equal("Name", "TomDeng"))
                 .append(Restrictions.And)
                 .append(Restrictions.equal("Age", 29))
@@ -106,7 +106,7 @@ public class RestrictionsTest {
     @Test
     public void nestedCompositeOperand() {
         String sqlCondition = "Where Name = TomDeng  AND Age = 29  AND (Weight BETWEEN 100 AND 180  AND Salary < 20w )";
-        Operand operand = Restrictions.clause(SqlClause.Where)
+        AbstractOperand operand = Restrictions.clause(SqlClause.Where)
                 .append(Restrictions.equal("Name", "TomDeng"))
                 .append(Restrictions.And)
                 .append(Restrictions.equal("Age", 29)
@@ -123,7 +123,7 @@ public class RestrictionsTest {
     @Test
     public void noOperands() {
         String sqlCondition = " ";
-        Operand operand = Restrictions.clause(SqlClause.Where);
+        AbstractOperand operand = Restrictions.clause(SqlClause.Where);
         
         Assert.assertThat(operand.toString(), IsEqual.equalTo(sqlCondition));
     }

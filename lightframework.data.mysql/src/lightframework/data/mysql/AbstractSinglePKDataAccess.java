@@ -1,22 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package lightframework.data.mysql;
 
 import lightframework.data.*;
+import lightframework.data.annotations.Column;
 import lightframework.data.exceptions.WhereConditionException;
+import java.lang.reflect.Field;
+import lightframework.data.configuration.Configurationable;
 
 /**
  *
  * @author Tom Deng
  */
-public abstract class AbstractSinglePKDataAccess<T> extends AbstractBaseDataAccess<T> implements SinglePKDataAccess<T> {
+public abstract class AbstractSinglePKDataAccess<T> extends AbstractDataAccess<T> implements SinglePKDataAccess<T> {
 
     protected String primaryKey;
 
-    protected AbstractSinglePKDataAccess(String tableName, String primaryKey, String connectionString) {
-        super(tableName, connectionString);
+    protected AbstractSinglePKDataAccess(String tableName, String primaryKey, String dbAlias, Configurationable config) {
+        super(tableName, dbAlias, config);
         this.primaryKey = primaryKey;
     }
 
@@ -58,6 +57,15 @@ public abstract class AbstractSinglePKDataAccess<T> extends AbstractBaseDataAcce
     }
 
     @Override
+    public int update(T entity, String... columnNames) {
+        String condition = String.format("%s = ?", this.primaryKey);
+        Object id = this.getPrimaryKeyValue(entity.getClass(), entity);
+        Object[] parameterValues = new Object[]{id};
+
+        return this.updateWithCondition(entity, condition, parameterValues, columnNames);
+    }
+
+    @Override
     public int update(T entity, int id, String... columnNames) {
         String condition = String.format("%1$s = %2$s", this.primaryKey, id);
         return this.updateWithCondition(entity, condition, null, columnNames);
@@ -92,8 +100,8 @@ public abstract class AbstractSinglePKDataAccess<T> extends AbstractBaseDataAcce
         strSql.append("SELECT MAX(%1$s) AS MaxValue FROM %2$s %3$s");
 
         String sqlCmd = String.format(strSql.toString(), fieldName, this.tableName, condition);
-        Object obj = MySqlHelper.executeScalar(this.connectionString, sqlCmd, parameterValues);
-        return Integer.valueOf(obj.toString());
+        Object obj = MySqlHelper.executeScalar(this.getConnection(), sqlCmd, parameterValues);
+        return Integer.valueOf(obj.toString()).intValue();
     }
 
     @Override
@@ -146,5 +154,29 @@ public abstract class AbstractSinglePKDataAccess<T> extends AbstractBaseDataAcce
     @Override
     public PageData<T> selectWithPageSizeByIdentity(int pageSize, int pageIndex, String condition, String orderByColumnName, SortTypeEnum sortType, Object[] parameterValues, String... columnNames) {
         return this.selectWithPageSizeByRowId(pageSize, pageIndex, condition, orderByColumnName, sortType, parameterValues, columnNames);
+    }
+
+    private Object getPrimaryKeyValue(Class<?> entityType, T entity) {
+        Object value = null;
+        Field[] fields = entityType.getDeclaredFields();
+        if (fields == null || fields.length == 0) {
+            return value;
+        }
+
+        try {
+            for (Field field : fields) {
+                Column column = field.getAnnotation(Column.class);
+                if (column == null || !column.isPrimaryKey()) {
+                    continue;
+                }
+                field.setAccessible(true);
+                value = field.get(entity);
+                break;
+            }
+        } catch (IllegalAccessException ex) {
+            throw new RuntimeException(ex);
+        }
+
+        return value;
     }
 }

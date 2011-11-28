@@ -1,41 +1,42 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package lightframework.data.mysql;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.Connection;
+
 import lightframework.data.*;
 import lightframework.data.exceptions.*;
 import lightframework.data.mapping.MetaDataTable;
+import lightframework.data.configuration.Configurationable;
+import lightframework.data.mysql.connection.ConnectionFactory;
 
 /**
  * 
  * @author Tom Deng
  * @param <T> 
  */
-public abstract class AbstractBaseSelect<T> implements BaseSelect<T>, EntityActionListener<T> {
-    
+public abstract class AbstractSelect<T> implements Select<T>, ResultSetHandler<T> {
+
     protected String tableName = "";
-    protected String connectionString = "";
+    protected String dbAlias = "";
+    protected Configurationable configuration;
 
-    protected AbstractBaseSelect(String tableName, String connectionString) {
+    protected AbstractSelect(String tableName, String dbAlias, Configurationable config) {
         this.tableName = tableName;
-        this.connectionString = connectionString;
+        this.dbAlias = dbAlias;
+        this.configuration = config;
     }
 
     @Override
-    public String getConnectionString() {
-        return this.connectionString;
+    public String getDBAlias() {
+        return this.dbAlias;
     }
 
     @Override
-    public void setConnectionString(String connectionString) {
-        this.connectionString = connectionString;
+    public void setDBAlias(String dbAlias) {
+        this.dbAlias = dbAlias;
     }
 
     @Override
@@ -49,6 +50,16 @@ public abstract class AbstractBaseSelect<T> implements BaseSelect<T>, EntityActi
     }
 
     @Override
+    public Configurationable getConfiguration() {
+        return this.configuration;
+    }
+
+    @Override
+    public void setConfiguration(Configurationable config) {
+        this.configuration = config;
+    }
+
+    @Override
     public abstract T toEntity(ResultSet rs, MetaDataTable mdt, String... columnNames);
 
     @Override
@@ -59,14 +70,14 @@ public abstract class AbstractBaseSelect<T> implements BaseSelect<T>, EntityActi
     @Override
     public int count(String condition, Object... parameterValues) {
         if (!this.containWhere(condition)) {
-            throw new WhereConditionException("condition：指定的条件,不要求带SQL语句Where关键字的条件");
+            throw new WhereConditionException("condition：指定的条件,要求带SQL语句Where关键字的条件");
         }
 
         StringBuilder strSql = new StringBuilder();
         strSql.append("SELECT COUNT(0) AS TotalCount FROM %1$s %2$s");
         String sqlCmd = String.format(strSql.toString(), this.getTableName(), condition);
-        Object result = MySqlHelper.executeNonQuery("", sqlCmd, parameterValues);
-        return Integer.valueOf(result.toString());
+        Object result = MySqlHelper.executeScalar(this.getConnection(), sqlCmd, parameterValues);
+        return Integer.valueOf(result.toString()).intValue();
     }
 
     @Override
@@ -76,11 +87,11 @@ public abstract class AbstractBaseSelect<T> implements BaseSelect<T>, EntityActi
         }
 
         StringBuilder strSql = new StringBuilder();
-        strSql.append("SELECT COUNT(0) FROM {%1$s} ");
-        strSql.append("WHERE {%2$s} ");
+        strSql.append("SELECT COUNT(0) FROM %1$s ");
+        strSql.append("WHERE %2$s ");
         String sqlCmd = String.format(strSql.toString(), this.tableName, condition);
-        Object result = MySqlHelper.executeScalar(this.connectionString, sqlCmd, parameterValues);
-        return (Integer.valueOf(result.toString()) > 0 ? true : false);
+        Object result = MySqlHelper.executeScalar(this.getConnection(), sqlCmd, parameterValues);
+        return Integer.valueOf(result.toString()) > 0;
     }
 
     @Override
@@ -177,13 +188,15 @@ public abstract class AbstractBaseSelect<T> implements BaseSelect<T>, EntityActi
 
         //临时表大小
         int tempTableSize = pageIndex * pageSize;
-
         //获取筛选列
         String columns = this.getColumns(columnNames);
+
         //设置第五个格式化参数为去掉Where字符串
-        String param5 = condition.isEmpty()
+        String trimWhere = condition.isEmpty()
                 ? ""
                 : String.format("AND %s", condition.trim().substring(5));
+
+        //设置OrderBy参数
         String orderBy = this.isNullOrEmpty(orderByColumnName)
                 ? String.format("%1$s %2$s", notinColumnName, sortType.toString())
                 : String.format("%1$s %2$s", orderByColumnName, sortType.toString());
@@ -197,7 +210,7 @@ public abstract class AbstractBaseSelect<T> implements BaseSelect<T>, EntityActi
         sqlFormat.append("%6$s ORDER BY %7$s LIMIT %8$s");
 
         String sqlCmd = String.format(sqlFormat.toString(), columns, this.tableName,
-                notinColumnName, tempTableSize, condition, param5, orderBy, pageSize);
+                notinColumnName, tempTableSize, condition, trimWhere, orderBy, pageSize);
         return this.getPageData(condition, parameterValues, sqlCmd, columnNames);
     }
 
@@ -243,10 +256,52 @@ public abstract class AbstractBaseSelect<T> implements BaseSelect<T>, EntityActi
         return null;
     }
 
+    protected PageData<T> getPageData(String condition, Object[] parameterValues, String sqlCmd, String[] columnNames) {
+        PageData<T> pageData = new PageData<T>();
+        pageData.setRecordSet(this.getEntities(sqlCmd, parameterValues, columnNames));
+        pageData.setCount(this.count(condition, parameterValues));
+        return pageData;
+    }
+
+    protected List<T> getEntities(String sqlCmd, String... columnNames) {
+        return this.getEntities(sqlCmd, null, columnNames);
+    }
+
+    protected List<T> getEntities(String sqlCmd, Object[] parameterValues, String... columnNames) {
+        return this.<T>getEntities(sqlCmd, parameterValues, this, columnNames);
+    }
+
+    protected <TEntity> List<TEntity> getEntities(String sqlCmd, Object[] parameterValues, ResultSetHandler<TEntity> rsh, String... columnNames) {
+        ArrayList<TEntity> entities = new ArrayList<TEntity>();
+        ResultSet rs = null;
+        Connection connection = null;
+
+        try {
+            MetaDataTable mdt = new MetaDataTable(this.getParameterizedType(rsh.getClass()), this.tableName);
+            connection = getConnection();
+            rs = MySqlHelper.executeReader(connection, sqlCmd, parameterValues);
+            while (rs.next()) {
+                entities.add(rsh.toEntity(rs, mdt, columnNames));
+            }
+        } catch (Exception ex) {
+            String message = String.format("[SQL]:{%1$s},[Exception]:{%2$s}", sqlCmd, ex.toString());
+            throw new RuntimeException(message);
+        } finally {
+            MySqlHelper.close(rs);
+            MySqlHelper.close(connection);
+        }
+
+        return entities;
+    }
+
+    protected Connection getConnection() {
+        return ConnectionFactory.creator(this.dbAlias, this.configuration);
+    }
+
     protected boolean containWhere(String condition) {
         return (this.isNullOrEmpty(condition)
                 || (!this.isNullOrEmpty(condition)
-                && condition.indexOf("where") != -1));
+                && condition.trim().toUpperCase().startsWith("WHERE")));
     }
 
     protected String getColumns(String... columnNames) {
@@ -259,50 +314,8 @@ public abstract class AbstractBaseSelect<T> implements BaseSelect<T>, EntityActi
         return this.join(",", columnNames);
     }
 
-    protected List<T> getEntities(String sqlCmd, String... columnNames) {
-        return this.getEntities(sqlCmd, null, columnNames);
-    }
-
-    protected List<T> getEntities(String sqlCmd, Object[] parameterValues, String... columnNames) {
-        return this.<T>getEntities(sqlCmd, parameterValues, this, columnNames);
-    }
-
-    protected <TEntity> List<TEntity> getEntities(String sqlCmd, Object[] parameterValues, EntityActionListener<TEntity> action, String... columnNames) {
-        ArrayList<TEntity> entities = new ArrayList<TEntity>();
-        ResultSet rs = null;
-
-        try {
-            MetaDataTable mdt = this.getMetaDataTable(action.getClass(), this.tableName);
-            rs = MySqlHelper.executeReader(this.connectionString, sqlCmd, parameterValues);
-            while (rs.next()) {
-                entities.add(action.toEntity(rs, mdt, columnNames));
-            }
-        } catch (Exception ex) {
-            String message = String.format("[SQL]:{%1$s},[Exception]:{%2$s}", sqlCmd, ex.toString());
-            throw new RuntimeException(message);
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-                rs = null;
-            }
-        }
-        
-        return entities;
-    }
-
-    protected PageData<T> getPageData(String condition, Object[] parameterValues, String sqlCmd, String[] columnNames) {
-        PageData<T> pageData = new PageData<T>();
-        pageData.setRecordSet(this.getEntities(sqlCmd, parameterValues, columnNames));
-        pageData.setCount(this.count(condition, parameterValues));
-        return pageData;
-    }
-
     protected boolean isNullOrEmpty(String s) {
-        return (s.equals("") || s.trim().isEmpty());
+        return (s == null || s.equals("") || s.trim().isEmpty());
     }
 
     protected <T> String join(String separator, T... values) {
@@ -328,14 +341,13 @@ public abstract class AbstractBaseSelect<T> implements BaseSelect<T>, EntityActi
         return builder.toString();
     }
 
-    private MetaDataTable getMetaDataTable(Class<?> actionType, String tableName) {
+    private Class<?> getParameterizedType(Class<?> handlerType) {
         Class<?> parameterizedType = null;
-        if (actionType.isAnonymousClass()) {
-            parameterizedType = (Class<?>) ((ParameterizedType) actionType.getGenericInterfaces()[0]).getActualTypeArguments()[0];
+        if (handlerType.isAnonymousClass()) {
+            parameterizedType = (Class<?>) ((ParameterizedType) handlerType.getGenericInterfaces()[0]).getActualTypeArguments()[0];
         } else {
-            parameterizedType = (Class<?>) ((ParameterizedType) actionType.getGenericSuperclass()).getActualTypeArguments()[0];
+            parameterizedType = (Class<?>) ((ParameterizedType) handlerType.getGenericSuperclass()).getActualTypeArguments()[0];
         }
-
-        return new MetaDataTable(parameterizedType, tableName);
+        return parameterizedType;
     }
 }

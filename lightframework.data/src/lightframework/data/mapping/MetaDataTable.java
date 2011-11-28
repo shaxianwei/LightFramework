@@ -1,16 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package lightframework.data.mapping;
 
 import java.util.HashMap;
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
+
 import lightframework.data.annotations.Column;
 
 /**
- *
+ * 映射实体(对应于数据库中的表)的元数据类。
  * @author Tom Deng
  */
 public class MetaDataTable {

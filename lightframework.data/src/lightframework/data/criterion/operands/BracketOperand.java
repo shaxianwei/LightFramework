@@ -8,7 +8,7 @@ package lightframework.data.criterion.operands;
  *
  * @author Tom Deng
  */
-public class BracketOperand extends Operand {
+public class BracketOperand extends AbstractOperand {
 
     private Bracket bracket;
 

@@ -8,7 +8,7 @@ package lightframework.data.criterion.operands;
  *
  * @author Tom Deng
  */
-public class InOperand extends Operand {
+public class InOperand extends AbstractOperand {
 
     private String columnName;
     private Object columnValue;

@@ -1,17 +1,17 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package lightframework.data;
+package lightframework.data.biz;
+
+import lightframework.data.DataAccess;
 
 /**
  *
+ * @param <TDAO> 
+ * @param <TEntity> 
  * @author Tom Deng
  */
-public abstract class BaseDataAccessBiz<TDAO extends BaseDataAccess<TEntity>, TEntity>
-        extends CommonBiz<TDAO, TEntity> {
+public abstract class AbstractDataAccessBiz<TDAO extends DataAccess<TEntity>, TEntity>
+        extends AbstractBaseBiz<TDAO, TEntity> {
 
-    protected BaseDataAccessBiz(TDAO dao) {
+    protected AbstractDataAccessBiz(TDAO dao) {
         super(dao);
     }
 

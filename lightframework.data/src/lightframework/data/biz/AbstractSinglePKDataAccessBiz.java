@@ -1,17 +1,18 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package lightframework.data;
+package lightframework.data.biz;
+
+import lightframework.data.DataAccess;
+import lightframework.data.SinglePKDataAccess;
 
 /**
  *
+ * @param <TDAO> 
+ * @param <TEntity> 
  * @author Tom Deng
  */
-public abstract class SinglePKDataAccessBiz<TDAO extends BaseDataAccess<TEntity> & SinglePKDataAccess<TEntity>, TEntity>
-        extends BaseDataAccessBiz<TDAO, TEntity> {
+public abstract class AbstractSinglePKDataAccessBiz<TDAO extends DataAccess<TEntity> & SinglePKDataAccess<TEntity>, TEntity>
+        extends AbstractDataAccessBiz<TDAO, TEntity> {
 
-    protected SinglePKDataAccessBiz(TDAO dao) {
+    protected AbstractSinglePKDataAccessBiz(TDAO dao) {
         super(dao);
     }
 
@@ -29,6 +30,10 @@ public abstract class SinglePKDataAccessBiz<TDAO extends BaseDataAccess<TEntity>
 
     public int delete(String id) {
         return this.getDAO().delete(id);
+    }
+
+    public int modify(TEntity entity, String... columnNames) {
+        return this.getDAO().update(entity, columnNames);
     }
 
     public int modify(TEntity entity, int id, String... columnNames) {

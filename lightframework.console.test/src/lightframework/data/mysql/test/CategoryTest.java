@@ -1,10 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package lightframework.data.mysql.test;
 
-import lightframework.data.entities.CategoryDTO;
+import lightframework.data.entities.CategoryEntity;
 import java.util.*;
 
 /**
@@ -16,16 +12,12 @@ public class CategoryTest {
     private final static String url = "jdbc:mysql://192.168.1.251/test?user=root&password=ddd";
 
     public void run() {
-        Category category = new Category(url);
+        CategoryDAO category = new CategoryDAO(null);
         category.deleteAll();
-        List<CategoryDTO> categories = category.select();
+        List<CategoryEntity> categories = category.select();
         for (int i = 0; i < 10; i++) {
-            CategoryDTO dto = new CategoryDTO(i,"test" + i, "test1" + i);
+            CategoryEntity dto = new CategoryEntity(i,"test" + i, "test1" + i);
             int id = category.insertWithId(dto);
         }
-        
-        List<CategoryDTO> oneCategory = category.getCategoryById(8);
-        if(oneCategory == null || oneCategory.isEmpty()) return;
-        System.out.println(oneCategory.get(0).getId());
     }
 }

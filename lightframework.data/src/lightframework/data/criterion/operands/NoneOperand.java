@@ -8,7 +8,7 @@ package lightframework.data.criterion.operands;
  *
  * @author Tom Deng
  */
-public class NoneOperand extends Operand {
+public class NoneOperand extends AbstractOperand {
 
     public NoneOperand() {
     }

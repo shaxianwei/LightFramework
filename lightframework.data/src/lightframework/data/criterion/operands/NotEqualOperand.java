@@ -8,7 +8,7 @@ package lightframework.data.criterion.operands;
  *
  * @author Tom Deng
  */
-public class NotEqualOperand extends Operand {
+public class NotEqualOperand extends AbstractOperand {
 
     private String columnName;
     private Object columnValue;

@@ -1,20 +1,20 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package lightframework.data;
+package lightframework.data.biz;
 
 import java.util.List;
 
+import lightframework.data.Select;
+
 /**
  *
+ * @param <TDAO> 
+ * @param <TEntity> 
  * @author Tom Deng
  */
-public abstract class CommonBiz<TDAO extends BaseSelect<TEntity>, TEntity> {
+public abstract class AbstractBaseBiz<TDAO extends Select<TEntity>, TEntity> {
 
     private TDAO dao;
 
-    protected CommonBiz(TDAO dao) {
+    protected AbstractBaseBiz(TDAO dao) {
         this.dao = dao;
     }
 

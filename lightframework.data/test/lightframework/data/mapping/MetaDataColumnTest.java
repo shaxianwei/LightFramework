@@ -8,7 +8,7 @@ import org.hamcrest.core.*;
 import org.junit.*;
 import org.junit.Assert;
 import java.lang.reflect.Field;
-import lightframework.data.dto.*;
+import lightframework.data.entity.*;
 import lightframework.data.annotations.Column;
 
 /**
@@ -24,7 +24,7 @@ public class MetaDataColumnTest {
 
     @Before
     public void setup() {
-        CategoryDTO category = new CategoryDTO();
+        CategoryEntity category = new CategoryEntity();
         Field field = null;
 
         try {

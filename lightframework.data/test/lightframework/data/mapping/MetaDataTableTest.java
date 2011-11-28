@@ -8,7 +8,7 @@ import org.hamcrest.core.*;
 import org.junit.*;
 import org.junit.Assert;
 import java.lang.reflect.Field;
-import lightframework.data.dto.*;
+import lightframework.data.entity.*;
 import lightframework.data.annotations.Column;
 
 /**
@@ -24,8 +24,8 @@ public class MetaDataTableTest {
 
     @Before
     public void setup() {
-        CategoryDTO category = new CategoryDTO();
-        this._metaDataTable = new MetaDataTable(category.getClass(), CategoryDTO.ENTITYNAME);
+        CategoryEntity category = new CategoryEntity();
+        this._metaDataTable = new MetaDataTable(category.getClass(), CategoryEntity.ENTITYNAME);
     }
 
     @After
@@ -40,13 +40,13 @@ public class MetaDataTableTest {
 
     @Test
     public void tableName_Should_Return_Correct_Result() {
-        Assert.assertThat(this._metaDataTable.getTableName(), IsEqual.equalTo(CategoryDTO.ENTITYNAME));
+        Assert.assertThat(this._metaDataTable.getTableName(), IsEqual.equalTo(CategoryEntity.ENTITYNAME));
     }
 
     @Test
     public void entityType_Should_Return_Correct_Result() {
         String typeName = this._metaDataTable.getEntityType().getName();
-        Assert.assertThat(typeName, IsEqual.equalTo(CategoryDTO.class.getName()));
+        Assert.assertThat(typeName, IsEqual.equalTo(CategoryEntity.class.getName()));
     }
 
     @Test

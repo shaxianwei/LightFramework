@@ -8,7 +8,7 @@ package lightframework.data.criterion.operands;
  *
  * @author Tom Deng
  */
-public class ClauseOperand extends Operand {
+public class ClauseOperand extends AbstractOperand {
 
     private SqlClause _sqlClause = SqlClause.None;
 

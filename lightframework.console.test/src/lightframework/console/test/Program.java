@@ -25,7 +25,7 @@ public class Program {
         EntityListTest entityListTest = new EntityListTest();
         entityListTest.run();
         
-        Operand operand = Restrictions.clause(SqlClause.Where)
+        AbstractOperand operand = Restrictions.clause(SqlClause.Where)
                 .append(Restrictions.equal("Name", "TomDeng"))
                 .append(Restrictions.And)
                 .append(Restrictions.between("Age", 20, 30));

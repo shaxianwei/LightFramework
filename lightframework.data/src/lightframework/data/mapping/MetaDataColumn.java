@@ -1,14 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package lightframework.data.mapping;
 
 import java.lang.reflect.Field;
+
 import lightframework.data.annotations.Column;
 
 /**
- *
+ * 映射列(对应于数据库中的列)的元数据类
  * @author Tom Deng
  */
 public class MetaDataColumn {
@@ -22,7 +19,7 @@ public class MetaDataColumn {
         this.field.setAccessible(true);
     }
 
-    public Column getColumnAnnotation() {
+    public Column getAnnotation() {
         return this.columnAnnotation;
     }
 
@@ -36,5 +33,13 @@ public class MetaDataColumn {
 
     public Field getField() {
         return this.field;
+    }
+
+    public <TEntity> Object getValue(TEntity entity) {
+        try {
+            return this.field.get(entity);
+        } catch (IllegalAccessException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package lightframework.data.entities;
+package lightframework.data.entity;
 
 import lightframework.data.annotations.Column;
 
@@ -10,7 +10,7 @@ import lightframework.data.annotations.Column;
  *
  * @author Tom Deng
  */
-public class CategoryDTO {
+public class CategoryEntity {
 
     public final static String ENTITYNAME = "Category";
     public final static String C_Id = "Id";
@@ -23,10 +23,10 @@ public class CategoryDTO {
     @Column(name = "Description")
     private String description;
 
-    public CategoryDTO() {
+    public CategoryEntity() {
     }
 
-    public CategoryDTO(Integer id, String name, String description) {
+    public CategoryEntity(Integer id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;

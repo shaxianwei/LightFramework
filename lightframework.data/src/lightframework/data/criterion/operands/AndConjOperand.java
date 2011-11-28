@@ -8,7 +8,7 @@ package lightframework.data.criterion.operands;
  *
  * @author Tom Deng
  */
-public class AndConjOperand extends Operand {
+public class AndConjOperand extends AbstractOperand {
 
     public AndConjOperand() {
     }

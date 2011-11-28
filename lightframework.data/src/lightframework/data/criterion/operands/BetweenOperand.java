@@ -8,7 +8,7 @@ package lightframework.data.criterion.operands;
  *
  * @author Tom Deng
  */
-public class BetweenOperand extends Operand {
+public class BetweenOperand extends AbstractOperand {
 
     private String columnName;
     private Object lowerValue;

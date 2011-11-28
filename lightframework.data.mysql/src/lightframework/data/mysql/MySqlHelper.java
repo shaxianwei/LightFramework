@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package lightframework.data.mysql;
 
 import java.sql.Connection;
@@ -25,11 +21,15 @@ public class MySqlHelper {
     }
 
     public static int executeNonQuery(Connection connection, String commandText, Object... commandParameters) {
+        PreparedStatement preStat = null;
+
         try {
-            PreparedStatement preStat = getPreparedStatement(connection, commandText, commandParameters);
+            preStat = getPreparedStatement(connection, commandText, commandParameters);
             return preStat.executeUpdate();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
+        } finally {
+            close(preStat);
         }
     }
 
@@ -37,10 +37,12 @@ public class MySqlHelper {
         Connection connection = null;
 
         try {
-            connection = DriverManager.getConnection(url);
+            connection = getConnection(url);
             return executeNonQuery(connection, commandText, commandParameters);
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
+        } finally {
+            close(connection);
         }
     }
 
@@ -56,7 +58,7 @@ public class MySqlHelper {
         Connection connection = null;
 
         try {
-            connection = DriverManager.getConnection(url);
+            connection = getConnection(url);
             return executeReader(connection, commandText, commandParameters);
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
@@ -64,8 +66,10 @@ public class MySqlHelper {
     }
 
     public static ResultSet executeReader(Connection connection, String commandText, Object... commandParameters) {
+        PreparedStatement preStat = null;
+
         try {
-            PreparedStatement preStat = getPreparedStatement(connection, commandText, commandParameters);
+            preStat = getPreparedStatement(connection, commandText, commandParameters);
             return preStat.executeQuery();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
@@ -80,18 +84,20 @@ public class MySqlHelper {
         return executeScalar(url, commandText, false, commandParameters);
     }
 
-    public static Object executeScalar(String url, String commandText, boolean isGeneratedKey) {
-        return executeScalar(url, commandText, isGeneratedKey, (Object[]) null);
+    public static Object executeScalar(String url, String commandText, boolean isGenerateKey) {
+        return executeScalar(url, commandText, isGenerateKey, (Object[]) null);
     }
 
-    public static Object executeScalar(String url, String commandText, boolean isGeneratedKey, Object... commandParameters) {
+    public static Object executeScalar(String url, String commandText, boolean isGenerateKey, Object... commandParameters) {
         Connection connection = null;
 
         try {
-            connection = DriverManager.getConnection(url);
-            return executeScalar(connection, commandText, isGeneratedKey, commandParameters);
+            connection = getConnection(url);
+            return executeScalar(connection, commandText, isGenerateKey, commandParameters);
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
+        } finally {
+            close(connection);
         }
     }
 
@@ -103,16 +109,17 @@ public class MySqlHelper {
         return executeScalar(connection, commandText, false, (Object[]) null);
     }
 
-    public static Object executeScalar(Connection connection, String commandText, boolean isGeneratedKey) {
-        return executeScalar(connection, commandText, isGeneratedKey, (Object[]) null);
+    public static Object executeScalar(Connection connection, String commandText, boolean isGenerateKey) {
+        return executeScalar(connection, commandText, isGenerateKey, (Object[]) null);
     }
 
-    public static Object executeScalar(Connection connection, String commandText, boolean isGeneratedKey, Object... commandParameters) {
-        try {
-            PreparedStatement preStat = getPreparedStatement(connection, commandText, isGeneratedKey, commandParameters);
+    public static Object executeScalar(Connection connection, String commandText, boolean isGenerateKey, Object... commandParameters) {
+        PreparedStatement preStat = null;
+        ResultSet rs = null;
 
-            ResultSet rs = null;
-            if (isGeneratedKey) {
+        try {
+            preStat = getPreparedStatement(connection, commandText, isGenerateKey, commandParameters);
+            if (isGenerateKey) {
                 preStat.executeUpdate();
                 rs = preStat.getGeneratedKeys();
             } else {
@@ -125,35 +132,41 @@ public class MySqlHelper {
             return 0;
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
+        } finally {
+            close(preStat);
+            close(rs);
+            close(connection);
         }
     }
 
-    public boolean executeTransaction(String url, SqlExpression sqlExpression) {
+    public static boolean executeTransaction(String url, SqlExpression sqlExpression) {
         ArrayList<SqlExpression> sqlExpressions = new ArrayList<SqlExpression>(1);
         sqlExpressions.add(sqlExpression);
 
         return executeTransaction(url, sqlExpressions);
     }
 
-    public boolean executeTransaction(Connection connection, SqlExpression sqlExpression) throws SQLException {
+    public static boolean executeTransaction(Connection connection, SqlExpression sqlExpression) throws SQLException {
         ArrayList<SqlExpression> sqlExpressions = new ArrayList<SqlExpression>(1);
         sqlExpressions.add(sqlExpression);
 
         return executeTransaction(connection, sqlExpressions);
     }
 
-    public boolean executeTransaction(String url, List<SqlExpression> sqlExpressions) {
+    public static boolean executeTransaction(String url, List<SqlExpression> sqlExpressions) {
         Connection connection = null;
 
         try {
-            connection = DriverManager.getConnection(url);
+            connection = getConnection(url);
             return executeTransaction(connection, sqlExpressions);
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
+        } finally {
+            close(connection);
         }
     }
 
-    public boolean executeTransaction(Connection connection, List<SqlExpression> sqlExpressions) throws SQLException {
+    public static boolean executeTransaction(Connection connection, List<SqlExpression> sqlExpressions) throws SQLException {
         if (sqlExpressions == null || sqlExpressions.isEmpty()) {
             throw new NullPointerException("sqlExpressions");
         }
@@ -177,9 +190,44 @@ public class MySqlHelper {
             throw new RuntimeException(ex);
         } finally {
             connection.releaseSavepoint(svpt);
+            close(connection);
         }
 
         return isSuccessfully;
+    }
+
+    public static Connection getConnection(String url) throws SQLException {
+        return DriverManager.getConnection(url);
+    }
+
+    public static void close(Connection conn) {
+        try {
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static void close(ResultSet rs) {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static void close(Statement stmt) {
+        try {
+            if (stmt != null) {
+                stmt.close();
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     private static PreparedStatement getPreparedStatement(Connection connection, String commandText,
@@ -188,8 +236,8 @@ public class MySqlHelper {
     }
 
     private static PreparedStatement getPreparedStatement(Connection connection, String commandText,
-            boolean isGeneratedKey, Object[] commandParameters) throws SQLException {
-        PreparedStatement preStat = isGeneratedKey
+            boolean isGenerateKey, Object[] commandParameters) throws SQLException {
+        PreparedStatement preStat = isGenerateKey
                 ? connection.prepareStatement(commandText, Statement.RETURN_GENERATED_KEYS)
                 : connection.prepareStatement(commandText);
         preStat.clearParameters();
@@ -218,17 +266,6 @@ public class MySqlHelper {
             }
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
-        }
-    }
-
-    private static void release(Connection connection) throws RuntimeException {
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-            connection = null;
         }
     }
 }
