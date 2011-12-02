@@ -12,7 +12,7 @@ import java.util.Properties;
  *
  * @author Tom Deng <tom.deng@codebook.in>
  */
-public class INIConfiguration implements Configurationable {
+public class INIConfiguration extends AbstractConfiguration implements Configurationable {
 
     private String fileName;
     private HashMap<String, Properties> sections = new HashMap<String, Properties>(5);

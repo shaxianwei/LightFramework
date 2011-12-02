@@ -7,7 +7,7 @@ import java.util.HashMap;
  *
  * @author Tom Deng <tom.deng@codebook.in>
  */
-public class XMLConfiguration implements Configurationable {
+public class XMLConfiguration extends AbstractConfiguration implements Configurationable {
 
     private String fileName = "";
 
@@ -34,7 +34,7 @@ public class XMLConfiguration implements Configurationable {
     public String getConnectionPoolType() {
         return "proxool";
     }
-    
+
     @Override
     public void refresh() {
         throw new UnsupportedOperationException("Not supported yet.");

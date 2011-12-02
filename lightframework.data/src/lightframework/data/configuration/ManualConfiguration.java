@@ -6,7 +6,7 @@ import java.util.Map;
  *
  * @author Tom Deng <tom.deng@hotmail.com>
  */
-public class ManualConfiguration implements Configurationable{
+public class ManualConfiguration  extends AbstractConfiguration implements Configurationable{
 
     public ManualConfiguration(){
         

@@ -108,4 +108,10 @@ public @interface Column {
      * @return 
      */
     String value() default "";
+
+    /**
+     * 列名对应排序号
+     * @return 
+     */
+    int seq() default -1;
 }

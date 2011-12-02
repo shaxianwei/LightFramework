@@ -30,6 +30,7 @@ public class MySqlHelper {
             throw new RuntimeException(ex);
         } finally {
             close(preStat);
+            close(connection);
         }
     }
 

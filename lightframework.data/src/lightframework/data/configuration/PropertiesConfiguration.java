@@ -7,7 +7,7 @@ import java.util.Map;
  *
  * @author Tom Deng <tom.deng@codebook.in>
  */
-public class PropertiesConfiguration implements Configurationable {
+public class PropertiesConfiguration  extends AbstractConfiguration implements Configurationable {
 
     private String fileName = "";
 
