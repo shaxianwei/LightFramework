@@ -4,7 +4,7 @@ package lightframework.data.configuration;
  *
  * @author Tom Deng <tom.deng@codebook.in>
  */
-public abstract class AbstractConfiguration {
+public class AbstractConfiguration {
 
     protected String dbalias = "default";
 
