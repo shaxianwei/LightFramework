@@ -7,6 +7,7 @@ import lightframework.data.*;
 import lightframework.data.collections.ColumnMap;
 import lightframework.data.exceptions.WhereConditionException;
 import lightframework.data.configuration.Configurationable;
+import lightframework.data.util.StringExtension;
 
 /**
  *
@@ -45,7 +46,7 @@ public abstract class AbstractDataAccess<T> extends AbstractSelect<T> implements
             throw new WhereConditionException("condition:指定的条件,不要求带SQL语句Where关键字的条件");
         }
 
-        if (this.isNullOrEmpty(condition)) {
+        if (StringExtension.isNullOrEmpty(condition)) {
             return -1;
         }
 
@@ -92,7 +93,7 @@ public abstract class AbstractDataAccess<T> extends AbstractSelect<T> implements
         }
 
         String commandText = String.format("INSERT INTO %1$s (%2$s) VALUES (%3$s)",
-                targetTableName, this.join(",", fields), this.join(",", values));
+                targetTableName, StringExtension.join(",", fields), StringExtension.join(",", values));
         return new SqlExpression(commandText, columnMap.values().toArray());
     }
 
@@ -112,7 +113,7 @@ public abstract class AbstractDataAccess<T> extends AbstractSelect<T> implements
         }
 
         String commandText = String.format("INSERT INTO %1$s (%2$s) VALUES (%3$s)",
-                targetTableName, this.join(",", fields), this.join(",", values));
+                targetTableName, StringExtension.join(",", fields), StringExtension.join(",", values));
         return commandText;
     }
 
@@ -137,7 +138,7 @@ public abstract class AbstractDataAccess<T> extends AbstractSelect<T> implements
         }
 
         String commandText = String.format("UPDATE %1$s SET %2$s WHERE %3$s ", targetTableName,
-                this.join(",", setValues), condition);
+                StringExtension.join(",", setValues), condition);
         return new SqlExpression(commandText, parameters.toArray());
     }
 
@@ -162,7 +163,7 @@ public abstract class AbstractDataAccess<T> extends AbstractSelect<T> implements
         }
 
         String sqlCmd = String.format("UPDATE %1$s SET %2$s WHERE %3$s ", targetTable,
-                this.join(",", setValues), condition);
+                StringExtension.join(",", setValues), condition);
         return sqlCmd;
     }
 

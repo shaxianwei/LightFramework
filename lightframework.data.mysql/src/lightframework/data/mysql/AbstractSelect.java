@@ -11,6 +11,7 @@ import lightframework.data.exceptions.*;
 import lightframework.data.mapping.MetaDataTable;
 import lightframework.data.configuration.Configurationable;
 import lightframework.data.mysql.connection.ConnectionFactory;
+import lightframework.data.util.StringExtension;
 
 /**
  * 
@@ -134,7 +135,7 @@ public abstract class AbstractSelect<T> implements Select<T>, ResultSetHandler<T
         //获取筛选列
         String columns = this.getColumns(columnNames);
         String sqlCmd = String.format("SELECT %1$s FROM %2$s %3$s %4$s LIMIT %5$s", columns, this.tableName, condition,
-                this.isNullOrEmpty(orderByColumnName)
+                StringExtension.isNullOrEmpty(orderByColumnName)
                 ? ""
                 : String.format("ORDER BY %1$s %2$s ", orderByColumnName, sortType.toString()),
                 topN);
@@ -161,7 +162,7 @@ public abstract class AbstractSelect<T> implements Select<T>, ResultSetHandler<T
         //获取筛选列
         String columns = this.getColumns(columnNames);
         String sqlCmd = String.format("SELECT %1$s FROM %2$s %3$s %4$s", columns, this.tableName, condition,
-                this.isNullOrEmpty(orderByColumnName)
+                StringExtension.isNullOrEmpty(orderByColumnName)
                 ? ""
                 : String.format("ORDER BY %1$s %2$s", orderByColumnName, sortType.toString()));
 
@@ -170,7 +171,7 @@ public abstract class AbstractSelect<T> implements Select<T>, ResultSetHandler<T
 
     @Override
     public PageData<T> selectWithPageSizeByNotIn(int pageSize, int pageIndex, String condition, String notinColumnName, String orderByColumnName, SortTypeEnum sortType, Object[] parameterValues, String... columnNames) {
-        if (this.isNullOrEmpty(notinColumnName)) {
+        if (StringExtension.isNullOrEmpty(notinColumnName)) {
             throw new NullPointerException("notinColumnName:请指定的筛选列名称,该参数为必须指定，且为当前表中合法的列名称");
         }
 
@@ -197,7 +198,7 @@ public abstract class AbstractSelect<T> implements Select<T>, ResultSetHandler<T
                 : String.format("AND %s", condition.trim().substring(5));
 
         //设置OrderBy参数
-        String orderBy = this.isNullOrEmpty(orderByColumnName)
+        String orderBy = StringExtension.isNullOrEmpty(orderByColumnName)
                 ? String.format("%1$s %2$s", notinColumnName, sortType.toString())
                 : String.format("%1$s %2$s", orderByColumnName, sortType.toString());
 
@@ -216,7 +217,7 @@ public abstract class AbstractSelect<T> implements Select<T>, ResultSetHandler<T
 
     @Override
     public PageData<T> selectWithPageSizeByRowId(int pageSize, int pageIndex, String condition, String orderByColumnName, SortTypeEnum sortType, Object[] parameterValues, String... columnNames) {
-        if (this.isNullOrEmpty(orderByColumnName)) {
+        if (StringExtension.isNullOrEmpty(orderByColumnName)) {
             throw new NullPointerException("orderByColumnName:排序字段名称，不要求带ORDER BY关键字,只要指定排序字段名称即可");
         }
 
@@ -299,8 +300,8 @@ public abstract class AbstractSelect<T> implements Select<T>, ResultSetHandler<T
     }
 
     protected boolean containWhere(String condition) {
-        return (this.isNullOrEmpty(condition)
-                || (!this.isNullOrEmpty(condition)
+        return (StringExtension.isNullOrEmpty(condition)
+                || (!StringExtension.isNullOrEmpty(condition)
                 && condition.trim().toUpperCase().startsWith("WHERE")));
     }
 
@@ -311,34 +312,7 @@ public abstract class AbstractSelect<T> implements Select<T>, ResultSetHandler<T
             return "*";
         }
 
-        return this.join(",", columnNames);
-    }
-
-    protected boolean isNullOrEmpty(String s) {
-        return (s == null || s.equals("") || s.trim().isEmpty());
-    }
-
-    protected <T> String join(String separator, T... values) {
-        if (values == null) {
-            throw new NullPointerException("values");
-        }
-        if ((values.length == 0) || (values[0] == null)) {
-            return "";
-        }
-        if (separator == null) {
-            separator = "";
-        }
-
-        StringBuilder builder = new StringBuilder();
-        builder.append(values[0]);
-        for (int i = 1; i < values.length; i++) {
-            builder.append(",");
-            if (values[i] != null) {
-                builder.append(values[i]);
-            }
-        }
-
-        return builder.toString();
+        return StringExtension.join(",", columnNames);
     }
 
     private Class<?> getParameterizedType(Class<?> handlerType) {

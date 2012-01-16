@@ -5,6 +5,7 @@ import lightframework.data.annotations.Column;
 import lightframework.data.exceptions.WhereConditionException;
 import java.lang.reflect.Field;
 import lightframework.data.configuration.Configurationable;
+import lightframework.data.util.StringExtension;
 
 /**
  *
@@ -47,7 +48,7 @@ public abstract class AbstractSinglePKDataAccess<T> extends AbstractDataAccess<T
 
     @Override
     public int delete(String... keyValues) {
-        return this.deleteIn(this.join(",", keyValues));
+        return this.deleteIn(StringExtension.join(",", keyValues));
     }
 
     @Override
@@ -130,7 +131,7 @@ public abstract class AbstractSinglePKDataAccess<T> extends AbstractDataAccess<T
 
     @Override
     public boolean isExistKey(String... keyValues) {
-        return this.isExistKey(this.join(",", keyValues));
+        return this.isExistKey(StringExtension.join(",", keyValues));
     }
 
     @Override
