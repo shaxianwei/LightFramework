@@ -5,6 +5,7 @@
 package lightframework.data.criterion;
 
 import lightframework.data.criterion.operands.*;
+import lightframework.data.SortTypeEnum;
 
 /**
  *
@@ -66,5 +67,13 @@ public class Restrictions {
 
     public static NotLikeOperand notLike(String columnName, Object columnValue) {
         return new NotLikeOperand(columnName, columnValue);
+    }
+
+    public static OrderByOperand orderBy(SortTypeEnum sortType, String... columnNames) {
+        return new OrderByOperand(sortType, columnNames);
+    }
+
+    public static GroupByOperand groupBy(String... columnNames) {
+        return new GroupByOperand(columnNames);
     }
 }
