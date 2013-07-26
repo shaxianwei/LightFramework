@@ -28,3 +28,5 @@
 /lightframework.data.test/dist/
 /lightframework.tracing/dist/
 /lightframework.tracing/build/
+/lightframework.data/target/
+/lightframework.data.mysql/target/
